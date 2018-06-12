@@ -1,0 +1,42 @@
+
+
+If you have your own collection of text files that you would like to access using the above methods, you can easily load them with the help of NLTK's PlaintextCorpusReader. Check the location of your files on your file system; in the following example, we have taken this to be the directory /usr/share/dict. Whatever the location, set this to be the value of corpus_root [1]. The second parameter of the PlaintextCorpusReader initializer [2] can be a list of fileids, like ['a.txt', 'test/b.txt'], or a pattern that matches all fileids, like '[abc]/.*\.txt' (see 3.4 for information about regular expressions).
+
+
+
+  >>> from nltk.corpus import PlaintextCorpusReader
+>>> corpus_root = '/usr/share/dict' [1]
+>>> wordlists = PlaintextCorpusReader(corpus_root, '.*') [2]
+>>> wordlists.fileids()
+['README', 'connectives', 'propernames', 'web2', 'web2a', 'words']
+>>> wordlists.words('connectives')
+['the', 'of', 'and', 'to', 'a', 'in', 'that', 'is', ...]
+ 
+ 
+
+As another example, suppose you have your own local copy of Penn Treebank (release 3), in C:\corpora. We can use the BracketParseCorpusReader to access this corpus. We specify the corpus_root to be the location of the parsed Wall Street Journal component of the corpus [1], and give a file_pattern that matches the files contained within its subfolders [2] (using forward slashes).
+
+
+
+  >>> from nltk.corpus import BracketParseCorpusReader
+>>> corpus_root = r"C:\corpora\penntreebank\parsed\mrg\wsj" [1]
+>>> file_pattern = r".*/wsj_.*\.mrg" [2]
+>>> ptb = BracketParseCorpusReader(corpus_root, file_pattern)
+>>> ptb.fileids()
+['00/wsj_0001.mrg', '00/wsj_0002.mrg', '00/wsj_0003.mrg', '00/wsj_0004.mrg', ...]
+>>> len(ptb.sents())
+49208
+>>> ptb.sents(fileids='20/wsj_2013.mrg')[19]
+['The', '55-year-old', 'Mr.', 'Noriega', 'is', "n't", 'as', 'smooth', 'as', 'the',
+'shah', 'of', 'Iran', ',', 'as', 'well-born', 'as', 'Nicaragua', "'s", 'Anastasio',
+'Somoza', ',', 'as', 'imperial', 'as', 'Ferdinand', 'Marcos', 'of', 'the', 'Philippines',
+'or', 'as', 'bloody', 'as', 'Haiti', "'s", 'Baby', Doc', 'Duvalier', '.']
+ 
+ 
+
+
+2   Conditional Frequency Distributions
+
+We introduced frequency distributions in 3. We saw that given some list mylist of words or other items, FreqDist(mylist) would compute the number of occurrences of each item in the list. Here we will generalize this idea.
+
+When the texts of a corpus are divided into several categories, by genre, topic, author, etc, we can maintain separate frequency distributions for each category. This will allow us to study systematic differences between the categories. In the previous section we achieved this using NLTK's ConditionalFreqDist data type. A conditional frequency distribution is a collection of frequency distributions, each one for a different "condition". The condition will often be the category of the text. 2.1 depicts a fragment of a conditional frequency distribution having just two conditions, one for news text and one for romance text.
